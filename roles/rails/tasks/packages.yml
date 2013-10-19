@@ -1,0 +1,5 @@
+# rails/tasks/packages.yml
+- name: Install Imagemagick
+  sudo: true
+  apt: pkg=libmagickcore-dev state=latest
+  apt: pkg=libmagickwand-dev state=latest

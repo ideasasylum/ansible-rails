@@ -1,0 +1,5 @@
+# rails/tasks/main.yml
+- include: packages.yml
+- include: users.yml
+- include: rbenv.yml
+- include: ruby.yml

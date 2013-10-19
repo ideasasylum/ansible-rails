@@ -1,0 +1,18 @@
+# common/tasks/packages.yml
+- name: Update APT cache every hour
+  sudo: true
+  apt: update_cache=yes cache_valid_time=3600
+- name: install htop
+  sudo: true
+  apt: pkg=htop state=latest
+- name: install curl
+  sudo: true
+  apt: pkg=curl state=latest
+- name: install git
+  sudo: true
+  apt: pkg=git-core state=latest
+- name: Install python-software-properties
+  sudo: true
+  apt: pkg=python-software-properties state=latest
+
+

@@ -1,0 +1,7 @@
+# webservers.yml
+- hosts: all
+  roles:
+    - common
+    - web
+    - rails
+    # - db

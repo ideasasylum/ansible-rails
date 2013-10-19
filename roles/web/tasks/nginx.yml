@@ -1,0 +1,13 @@
+# web/tasks/nginx.yml
+
+- name: Add the nginx signing key
+  sudo: true
+  apt_key: url=http://nginx.org/keys/nginx_signing.key
+
+- name: Add the nginx repo
+  sudo: true
+  apt_repository: repo='ppa:nginx/stable'
+
+- name: Install the nginx package
+  sudo: true
+  apt: pkg=nginx state=present

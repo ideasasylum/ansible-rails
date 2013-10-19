@@ -1,0 +1,2 @@
+# common/tasks/main.yml
+- include: packages.yml

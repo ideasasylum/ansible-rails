@@ -1,0 +1,33 @@
+# rails/tasks/users.yml
+- name: Add the admin group
+  sudo: true
+  group: name=admin state=present
+
+- name: Add the webapp user
+  sudo: true
+  user: name=vagrant group=admin state=present shell=/bin/bash home=/home/vagrant
+# - name: Create the known_hosts SSH file
+#   file: name=/home/vagrant/.ssh state=directory group=vagrant user=vagrant mode=700
+#   copy: name=/home/vagrant/.ssh/known_hosts state=file group=vagrant user=vagrant mode=644
+
+- name: Make temporary sudoers file
+  sudo: true
+  command: cp -f /etc/sudoers /etc/sudoers.tmp
+- name: Make backup sudoers file
+  sudo: true
+  command: cp -f /etc/sudoers /etc/sudoers.bak
+- name: Ensure sudoers contains root user
+  sudo: true
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^root' line='root ALL=(ALL:ALL) ALL'
+- name: Ensure sudoers contains admin group
+  sudo: true
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^%admin' line='%admin ALL=(ALL) NOPASSWD:ALL'
+- name: Ensure sudoers contains sudo group
+  sudo: true
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^%sudo' line='%sudo ALL=(ALL:ALL) ALL'
+- name: Ensure sudoers contains user
+  sudo: true
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^%vagrant' line='%vagrant ALL=(ALL) NOPASSWD:ALL'
+- name: Save the suders file
+  sudo: true
+  shell: visudo -q -c -f /etc/sudoers.tmp && cp -f /etc/sudoers.tmp /etc/sudoers
