@@ -14,5 +14,13 @@
 - name: Install python-software-properties
   sudo: true
   apt: pkg=python-software-properties state=latest
-
+- name: Install unattended-upgrades
+  sudo: true
+  apt: pkg=unattended-upgrades
+- name: Allow unattended security updates
+  sudo: true
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp=^\s*(?!\/\/).* line='^(\s*)"Ubuntu precise-security";' state=present insertafter='Unattended-Upgrade::Allowed-Origins {'
+- name: Configure automatic updates
+  sudo: true
+  copy: src=10periodic dest=/etc/apt/apt.conf.d/10periodic
 
