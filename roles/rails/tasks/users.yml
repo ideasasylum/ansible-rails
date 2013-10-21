@@ -28,6 +28,6 @@
 - name: Ensure sudoers contains user
   sudo: true
   lineinfile: dest=/etc/sudoers.tmp state=present regexp='^%vagrant' line='%vagrant ALL=(ALL) NOPASSWD:ALL'
-- name: Save the suders file
+- name: Check and save the sudoers file
   sudo: true
   shell: visudo -q -c -f /etc/sudoers.tmp && cp -f /etc/sudoers.tmp /etc/sudoers
