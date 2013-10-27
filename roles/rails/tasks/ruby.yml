@@ -1,13 +1,19 @@
 # rails/tasks/ruby.yml
 - name: Check if ruby {{ruby_version}} is installed
-  shell: RBENV_ROOT={{rbenv_path}} rbenv versions | grep {{ruby_version}}
+  command: rbenv versions | grep {{ruby_version}}
   register: ruby_installed
   ignore_errors: yes
 
 - name: Install Ruby {{ruby_version}}
   command: rbenv install {{ruby_version}}
-  when: ruby_installed|failed
+  when: ruby_installed == 'failed'
+
+- name: Check if ruby {{ruby_version}} is set globally
+  command: rbenv global
+  register: global_ruby_version
+  ignore_errors: yes
 
 - name: Set the global ruby version
   command: rbenv global {{ruby_version}}
+  when: global_ruby_version.stdout != ruby_version
 
