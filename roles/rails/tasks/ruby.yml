@@ -3,6 +3,8 @@
   command: rbenv versions | grep {{ruby_version}}
   register: ruby_installed
   ignore_errors: yes
+  failed_when:
+  changed_when:
 
 - name: Install Ruby {{ruby_version}}
   command: rbenv install {{ruby_version}}
@@ -12,6 +14,8 @@
   command: rbenv global
   register: global_ruby_version
   ignore_errors: yes
+  failed_when:
+  changed_when:
 
 - name: Set the global ruby version
   command: rbenv global {{ruby_version}}

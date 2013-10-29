@@ -4,6 +4,8 @@
   command: test -x {{rbenv_path}}
   register: rbenv_present
   ignore_errors: yes
+  failed_when:
+  changed_when:
 
 
 - name: Checkout rbenv git repo
@@ -23,6 +25,8 @@
   command: test -x {{ruby_build_path}}
   register: ruby_build_present
   ignore_errors: yes
+  failed_when:
+  changed_when:
 
 - name: Install ruby-build
   git: repo=https://github.com/sstephenson/ruby-build.git dest={{ruby_build_path}}
