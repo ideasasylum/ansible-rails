@@ -6,15 +6,15 @@
 - name: Add the webapp user
   sudo: true
   user:
-    name: vagrant
+    name: "{{username}}"
     group: admin
     state: present
     shell: /bin/bash
-    home: /home/vagrant
+    home: /home/{{username}}
 
 # - name: Create the known_hosts SSH file
-#   file: name=/home/vagrant/.ssh state=directory group=vagrant user=vagrant mode=700
-#   copy: name=/home/vagrant/.ssh/known_hosts state=file group=vagrant user=vagrant mode=644
+#   file: name=/home/{{username}}/.ssh state=directory group={{username}} user={{username}} mode=700
+#   copy: name=/home/{{username}}/.ssh/known_hosts state=file group={{username}} user={{username}} mode=644
 
 - name: Ensure sudoers contains root user
   sudo: true
@@ -43,8 +43,8 @@
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^%vagrant'
-    line: '%vagrant ALL=(ALL) NOPASSWD:ALL'
+    regexp: '^%{{username}}'
+    line: '%{{username}} ALL=(ALL) NOPASSWD:ALL'
 - name: Check and save the sudoers file
   sudo: true
   shell: visudo -q -c -f /etc/sudoers

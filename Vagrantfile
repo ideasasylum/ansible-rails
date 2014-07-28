@@ -43,6 +43,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
     ansible.verbose = 'vv'
+    ansible.groups = { 'vagrant' => ['default']}
   end
 
   # Provider-specific configuration so you can fine-tune various
