@@ -1,0 +1,3 @@
+# rails/tasks/main.yml
+- include: packages.yml
+- include: redis.yml

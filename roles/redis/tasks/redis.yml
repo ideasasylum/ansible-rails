@@ -1,0 +1,23 @@
+# redis/tasks/ruby.yml
+- name: Check if redis is installed
+  command: redis-cli --version
+  register: redis_installed
+  ignore_errors: yes
+
+- name: Download Redis
+  command: wget http://download.redis.io/redis-stable.tar.gz
+  when: redis_installed|failed
+
+- name: Untar Redis
+  command: tar xvzf redis-stable.tar.gz
+  when: redis_installed|failed
+
+- name: Build Redis
+  command: make chdir=redis-stable
+  when: redis_installed|failed
+
+- name: Copy redis executables to /usr/local/bin
+  command: make install chdir=redis-stable
+  when: redis_installed|failed
+  sudo: true
+
