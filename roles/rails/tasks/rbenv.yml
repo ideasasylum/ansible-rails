@@ -1,30 +1,29 @@
 # rails/tasks/rbenv.yml
 
 - name: rbenv | check rbenv installed
-  command: test -x {{rbenv_path}}
+  stat: path={{rbenv_path}}
   register: rbenv_present
   ignore_errors: yes
 
-
 - name: Checkout rbenv git repo
   git: repo=https://github.com/sstephenson/rbenv.git dest=~/.rbenv
-  when: rbenv_present == 'failed'
+  when: rbenv_present.stat.exists == false
 
 - name: Add the rbenv to .bashrc
   lineinfile: dest=~vagrant/.bashrc regexp='^export' line='export PATH="$HOME/.rbenv/bin:$PATH"' insertbefore='^# If not running interactively'
-  when: rbenv_present == 'failed'
+  when: rbenv_present.stat.exists == false
 
 - name: Init rbenv in .bashrc
   lineinfile: dest=~vagrant/.bashrc regexp='^eval' line='eval "$(rbenv init -)"' insertbefore='^# If not running interactively'
-  when: rbenv_present == 'failed'
+  when: rbenv_present.stat.exists == false
 
 
 - name: check if ruby-build installed
-  command: test -x {{ruby_build_path}}
+  stat: path={{ruby_build_path}}
   register: ruby_build_present
   ignore_errors: yes
 
 - name: Install ruby-build
   git: repo=https://github.com/sstephenson/ruby-build.git dest={{ruby_build_path}}
-  when: ruby_build_present == 'failed'
+  when: ruby_build_present.stat.exists == false
 

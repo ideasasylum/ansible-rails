@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network :private_network, ip: "192.168.111.222"
+  config.vm.network :private_network, ip: "192.168.50.4"
   config.vm.hostname = "ansible-vagrant"
 
   # Create a public network, which generally matched to bridged network.
@@ -56,6 +56,12 @@ Vagrant.configure("2") do |config|
   #   # Use VBoxManage to customize the VM. For example to change memory:
   #   vb.customize ["modifyvm", :id, "--memory", "1024"]
   # end
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+  end
+
   #
   # View the documentation for the provider you're using for more
   # information on available options.
