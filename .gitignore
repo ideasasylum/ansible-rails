@@ -1,2 +1,3 @@
 .vagrant/machines/*
 ansible-rails.sublime-workspace
+vagrant_ansible_inventory
