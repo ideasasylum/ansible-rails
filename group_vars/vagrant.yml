@@ -1,1 +1,2 @@
-username: vagrant
+initial_user: root
+username: deployer

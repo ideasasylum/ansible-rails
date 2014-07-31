@@ -1,4 +1,4 @@
-# rails/tasks/users.yml
+# common/tasks/users.yml
 - name: Add the admin group
   sudo: true
   group: name=admin state=present
@@ -12,9 +12,23 @@
     shell: /bin/bash
     home: /home/{{username}}
 
-# - name: Create the known_hosts SSH file
-#   file: name=/home/{{username}}/.ssh state=directory group={{username}} user={{username}} mode=700
-#   copy: name=/home/{{username}}/.ssh/known_hosts state=file group={{username}} user={{username}} mode=644
+- name: Create the user's .ssh file
+  sudo: true
+  file: name=/home/{{username}}/.ssh state=directory owner={{username}} mode=700
+
+- name: Check if the authorized_keys file exists
+  sudo: true
+  stat: path=/home/{{username}}/.ssh/authorized_keys
+  register: authorized_keys
+
+- name: Install the authorized_keys file
+  sudo: true
+  copy:
+    dest: /home/{{username}}/.ssh/authorized_keys
+    src: ~/.ssh/id_rsa.pub
+    owner: "{{username}}"
+    mode: 0600
+  when: authorized_keys.stat.exists == false
 
 - name: Ensure sudoers contains root user
   sudo: true
@@ -48,3 +62,21 @@
 - name: Check and save the sudoers file
   sudo: true
   shell: visudo -q -c -f /etc/sudoers
+
+- name: Remove root ssh login
+  sudo: true
+  lineinfile:
+    regexp: '^#*PermitRootLogin'
+    line: PermitRootLogin no
+    state: present
+    dest: /etc/ssh/sshd_config
+
+- name: Remove passwordless ssh login
+  sudo: true
+  lineinfile:
+    regexp: '^#*PasswordAuthentication'
+    line: PasswordAuthentication no
+    state: present
+    dest: /etc/ssh/sshd_config
+  notify:
+    - restart sshd

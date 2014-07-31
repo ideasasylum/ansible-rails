@@ -17,7 +17,6 @@
   lineinfile: dest=~{{username}}/.bashrc regexp='^eval' line='eval "$(rbenv init -)"' insertbefore='^# If not running interactively'
   when: rbenv_present.stat.exists == false
 
-
 - name: check if ruby-build installed
   stat: path={{ruby_build_path}}
   register: ruby_build_present

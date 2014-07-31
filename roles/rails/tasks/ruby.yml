@@ -1,11 +1,9 @@
 # rails/tasks/ruby.yml
 - name: Check if ruby {{ruby_version}} is installed
-  command: "rbenv versions {{ruby_version}}"
+  command: rbenv versions
   register: ruby_installed
-  failed_when: "'not installed' in ruby_installed.stderr"
+  failed_when: "'{{ruby_version}}' not in ruby_installed.stdout"
   ignore_errors: yes
-
-- debug: msg={{ruby_installed}}
 
 - name: Install Ruby {{ruby_version}}
   command: rbenv install {{ruby_version}}
