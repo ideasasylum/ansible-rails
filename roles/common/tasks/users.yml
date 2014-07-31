@@ -67,7 +67,7 @@
   sudo: true
   lineinfile:
     regexp: '^#*PermitRootLogin'
-    line: PermitRootLogin no
+    line: PermitRootLogin without-password
     state: present
     dest: /etc/ssh/sshd_config
 
