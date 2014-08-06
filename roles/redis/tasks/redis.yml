@@ -13,11 +13,11 @@
   when: redis_installed|failed
 
 - name: Build Redis
-  command: make chdir=redis-stable
+  command: make chdir=/home/{{username}}/redis-stable
   when: redis_installed|failed
 
 - name: Copy redis executables to /usr/local/bin
-  command: make install chdir=redis-stable
+  command: make install chdir=/home/{{username}}/redis-stable
   when: redis_installed|failed
   sudo: true
 
