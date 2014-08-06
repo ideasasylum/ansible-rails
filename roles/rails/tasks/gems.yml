@@ -1,0 +1,7 @@
+- name: Check if bundler is installed
+  command: bundler -v
+  register: bundler_installed
+  ignore_errors: yes
+- name: Install bundler
+  command: gem install bundler
+  when: bundler_installed|failed
