@@ -79,4 +79,4 @@
     state: present
     dest: /etc/ssh/sshd_config
   notify:
-    - restart sshd
+    - restart ssh
