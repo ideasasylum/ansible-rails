@@ -8,6 +8,9 @@
 - name: install curl
   sudo: true
   apt: pkg=curl state=latest
+- name: install make
+  sudo: true
+  apt: pkg=make state=latest
 - name: install git
   sudo: true
   apt: pkg=git-core state=latest

@@ -1,7 +1,13 @@
 # webservers.yml
 - hosts: all
+  remote_user: "{{initial_user}}"
   roles:
     - common
+
+- hosts: all
+  remote_user: "{{username}}"
+  roles:
     - web
     - database
+    - redis
     - rails

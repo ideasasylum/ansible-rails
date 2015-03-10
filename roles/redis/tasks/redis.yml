@@ -1,0 +1,64 @@
+# redis/tasks/ruby.yml
+- name: Check if redis is installed
+  command: redis-cli --version
+  register: redis_installed
+  ignore_errors: yes
+
+- name: Download Redis
+  command: wget http://download.redis.io/redis-stable.tar.gz
+  when: redis_installed|failed
+
+- name: Untar Redis
+  command: tar xvzf redis-stable.tar.gz
+  when: redis_installed|failed
+
+- name: Build Redis
+  command: make chdir=/home/{{username}}/redis-stable
+  when: redis_installed|failed
+
+- name: Copy redis executables to /usr/local/bin
+  command: make install chdir=/home/{{username}}/redis-stable
+  when: redis_installed|failed
+  sudo: true
+
+- name: Create the Redis conf directory
+  file: path=/etc/redis/ state=directory
+  sudo: true
+
+- name: Copy Redis conf file
+  sudo: true
+  copy:
+    dest: /etc/redis/6379.conf
+    src: 6379.conf
+    owner: root
+    group: root
+
+- name: Configure the Redis log file
+  sudo: true
+  lineinfile:
+    dest: /etc/redis/6379.conf
+    state: present
+    regexp: ^logfile
+    line: logfile {{redis_log_file}}
+
+- name: Create the Redis database directory
+  file: path=/var/lib/redis/6379 state=directory
+  sudo: true
+
+- name: Install Redis service
+  sudo: true
+  copy:
+    dest: /etc/init.d/redis_6379
+    src: redis_6379
+
+- name: Update Redis run levels
+  sudo: true
+  command: update-rc.d redis_6379 defaults
+
+- name: Start Redis
+  service: name=redis_6379 state=started
+
+- name: Check Redis connection
+  command: redis-cli ping
+  register: redis_output
+  failed_when: "'Connection Refused' in redis_output.stderr"

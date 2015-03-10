@@ -1,0 +1,82 @@
+# common/tasks/users.yml
+- name: Add the admin group
+  sudo: true
+  group: name=admin state=present
+
+- name: Add the webapp user
+  sudo: true
+  user:
+    name: "{{username}}"
+    group: admin
+    state: present
+    shell: /bin/bash
+    home: /home/{{username}}
+
+- name: Create the user's .ssh file
+  sudo: true
+  file: name=/home/{{username}}/.ssh state=directory owner={{username}} mode=700
+
+- name: Check if the authorized_keys file exists
+  sudo: true
+  stat: path=/home/{{username}}/.ssh/authorized_keys
+  register: authorized_keys
+
+- name: Install the authorized_keys file
+  sudo: true
+  copy:
+    dest: /home/{{username}}/.ssh/authorized_keys
+    src: ~/.ssh/id_rsa.pub
+    owner: "{{username}}"
+    mode: 0600
+  when: authorized_keys.stat.exists == false
+
+- name: Ensure sudoers contains root user
+  sudo: true
+  lineinfile:
+    dest: /etc/sudoers
+    backup: true
+    state: present
+    regexp: '^root'
+    line: 'root ALL=(ALL:ALL) ALL'
+- name: Ensure sudoers contains admin group
+  sudo: true
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%admin'
+    line: '%admin ALL=(ALL) NOPASSWD:ALL'
+- name: Ensure sudoers contains sudo group
+  sudo: true
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL:ALL) ALL'
+- name: Ensure sudoers contains user
+  sudo: true
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%{{username}}'
+    line: '%{{username}} ALL=(ALL) NOPASSWD:ALL'
+- name: Check and save the sudoers file
+  sudo: true
+  shell: visudo -q -c -f /etc/sudoers
+
+- name: Remove root ssh login
+  sudo: true
+  lineinfile:
+    regexp: '^#*PermitRootLogin'
+    line: PermitRootLogin without-password
+    state: present
+    dest: /etc/ssh/sshd_config
+
+- name: Remove passwordless ssh login
+  sudo: true
+  lineinfile:
+    regexp: '^#*PasswordAuthentication'
+    line: PasswordAuthentication no
+    state: present
+    dest: /etc/ssh/sshd_config
+  notify:
+    - restart ssh
