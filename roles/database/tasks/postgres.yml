@@ -1,17 +1,20 @@
 - name: Install Postgres
   sudo: true
-  apt: pkg=postgresql,postgresql-contrib,libpq-dev state=present
+  apt: pkg=postgresql state=present
+- name: Install Postgres modules
+  sudo: true
+  apt: pkg=postgresql-contrib,libpq-dev state=present
 - name: Update pg_hba.conf Postgres
   sudo: true
   copy:
-    dest: /etc/postgresql/9.1/main/pg_hba.conf
+    dest: /etc/postgresql/9.3/main/pg_hba.conf
     src: pg_hba.conf
     owner: postgres
     group: postgres
 - name: Listen to localhost addresses
   sudo: true
   lineinfile:
-    dest: /etc/postgresql/9.1/main/postgresql.conf
+    dest: /etc/postgresql/9.3/main/postgresql.conf
     backup: true
     state: present
     regexp: ^\s*(?!#).*
