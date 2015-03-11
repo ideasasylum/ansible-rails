@@ -4,8 +4,6 @@
   register: ruby_installed
   failed_when: "'{{ruby_version}}' not in ruby_installed.stdout"
   ignore_errors: yes
-  failed_when:
-  changed_when:
 
 - name: Install Ruby {{ruby_version}}
   command: rbenv install {{ruby_version}}
@@ -15,8 +13,6 @@
   command: rbenv global
   register: global_ruby_version
   ignore_errors: yes
-  failed_when:
-  changed_when:
 
 - name: Set the global ruby version
   command: rbenv global {{ruby_version}}
